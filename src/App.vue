@@ -38,12 +38,12 @@
         <div class="setting-row">
             <label class="label">生成尺寸</label>
             <div class="content">
-              <label class="radio" v-for="(size, index) in sizeList" :key="index"><input name="size" type="radio" @click="check(size, 'size')" />{{size.width}}px*{{size.height}}px</label> 
+              <label class="radio" v-for="(size, index) in sizeList" :key="index"><input name="size" type="radio" @click="check(size, 'size', index)" />{{size.width}}px*{{size.height}}px</label> 
             </div>
         </div>
         <button class="button" type="button" @click="create">生成</button>
         <div class="canvas" v-if="showCanvas">
-            <canvas ref="canvas" :width="settingObj.size.width" :height="settingObj.size.height"></canvas>
+            <canvas ref="canvas"></canvas>
             <a id="download" :href="src" download="shopQrcode.jpg">下载图片</a>
         </div>
     </div>
@@ -97,7 +97,7 @@ export default {
                 part2: 0.7
               },
             ],
-            fontSizeList: [10, 10, 10],
+            fontSizeList: [64, 36, 76],
             settingObj: {
               title1: '',
               title2: '',
@@ -111,7 +111,7 @@ export default {
             layoutActiveIndex: -1,
             colorActiveIndex: -1,
             showCanvas: false,
-            imagePadding: 10,
+            padding: 10,
             imageWidth: 0,
             imageHeight: 0,
             src: ''
@@ -140,6 +140,8 @@ export default {
             this.settingObj[key] = value;
             if (key !== 'size') {
               this[`${key}ActiveIndex`] = index;
+            } else {
+                this.settingObj.fontSize = this.fontSizeList[index];
             }
         },
         layoutStyleObj(index) {
@@ -163,43 +165,59 @@ export default {
           let imageHeight = this.imageHeight;
           let textX;
           let textY;
-          let canvasWidth = this.settingObj.size.width;  // 画布大小
-          let canvasHeight = this.settingObj.size.height;
-          let part1 = this.settingObj.layout.part1;
-          let part2 = this.settingObj.layout.part2;
-          let type = this.settingObj.layout.type;
+          let textMaxWidth;
+          let settingObj = this.settingObj;
+          let canvasWidth = settingObj.size.width;  // 画布大小
+          let canvasHeight = settingObj.size.height;
+          let part1 = settingObj.layout.part1;
+          let part2 = settingObj.layout.part2;
+          let type = settingObj.layout.type;
           let leftOrTop = part1 < part2;
           let canvas;
           let ctx;
           let image = new Image();
+          let fontSize = settingObj.fontSize;
           if (type) {
-            imageY = leftOrTop ? this.imagePadding : canvasHeight * part1;
-            drawImageHeight = canvasHeight * (leftOrTop ? part1 : part2) - this.imagePadding;
+            imageY = leftOrTop ? this.padding : canvasHeight * part1;
+            drawImageHeight = canvasHeight * (leftOrTop ? part1 : part2) - this.padding;
             // 图片等比缩放 
             drawImageWidth = drawImageHeight * imageWidth / imageHeight; 
             imageX = (canvasWidth - drawImageWidth) / 2;
+
+            textY = leftOrTop ? (canvasHeight * part2 - this.padding - fontSize * 2) / 2 + canvasHeight * part1 : (canvasHeight * part1 - this.padding - fontSize * 2) / 2;
+            textX = this.padding;
+            textMaxWidth = canvasWidth - 2 * this.padding;
           } else {
-            imageX = leftOrTop ? this.imagePadding : canvasWidth * part1;
-            drawImageWidth = canvasWidth * (leftOrTop ? part1 : part2) - this.imagePadding;
+            imageX = leftOrTop ? this.padding : canvasWidth * part1;
+            drawImageWidth = canvasWidth * (leftOrTop ? part1 : part2) - this.padding;
             drawImageHeight = drawImageWidth * imageHeight / imageWidth; 
             imageY = (canvasHeight - drawImageHeight) / 2;
+
+            textX = leftOrTop ? canvasWidth * part1 + this.padding : this.padding;
+            textY = (canvasHeight - this.padding - fontSize * 2) / 2;
+            textMaxWidth = canvasWidth * (leftOrTop ? part2 : part1) - 2 * this.padding;
           }
           this.showCanvas = true;
           this.$nextTick(() => {
             canvas = this.$refs.canvas;
+            canvas.width= canvasWidth;
+            canvas.height= canvasHeight;
             ctx = canvas.getContext('2d');
 
             ctx.fillStyle = this.settingObj.color;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-            // ctx.font = "50px";
-            // ctx.fillStyle = "#212121";
-            // ctx.fillText("")
-
-            image.src = this.settingObj.imgSource;
+            image.src = settingObj.imgSource;
             image.onload = () => {
-              ctx.drawImage(image, imageX, imageY, drawImageWidth, drawImageHeight);
-              this.src = canvas.toDataURL("image/jpg", 1);
+                ctx.drawImage(image, imageX, imageY, drawImageWidth, drawImageHeight);
+                
+                ctx.font = `${fontSize}px zaoZiGongFang`;
+                ctx.textBaseline = "top";
+                // ctx.textAlign = 'center';
+                ctx.fillStyle = "#212121";
+                ctx.fillText(settingObj.title1, textX, textY, textMaxWidth);
+                ctx.fillText(settingObj.title2, textX, textY + fontSize + this.padding, textMaxWidth);
+                this.src = canvas.toDataURL("image/jpg", 1);
             }
           });
         }
@@ -307,7 +325,16 @@ h2 {
 }
 
 .canvas {
-  margin-left: 20px;
+  margin-left: 120px;
   margin-top: 20px;
+}
+
+@font-face {
+    font-family: 'zaoZiGongFang';
+    src: url("./assets/zaozigongfangmodeng.ttf") format('truetype');
+}
+
+a {
+    font-family: 'zaoZiGongFang';
 }
 </style>
