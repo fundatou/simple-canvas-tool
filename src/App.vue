@@ -185,7 +185,7 @@ export default {
             imageX = (canvasWidth - drawImageWidth) / 2;
 
             textY = leftOrTop ? (canvasHeight * part2 - this.padding - fontSize * 2) / 2 + canvasHeight * part1 : (canvasHeight * part1 - this.padding - fontSize * 2) / 2;
-            textX = this.padding;
+            textX = canvasWidth / 2;
             textMaxWidth = canvasWidth - 2 * this.padding;
           } else {
             imageX = leftOrTop ? this.padding : canvasWidth * part1;
@@ -193,7 +193,7 @@ export default {
             drawImageHeight = drawImageWidth * imageHeight / imageWidth; 
             imageY = (canvasHeight - drawImageHeight) / 2;
 
-            textX = leftOrTop ? canvasWidth * part1 + this.padding : this.padding;
+            textX = leftOrTop ? canvasWidth * part1 + canvasWidth * part2 / 2 : canvasWidth * part1 / 2;
             textY = (canvasHeight - this.padding - fontSize * 2) / 2;
             textMaxWidth = canvasWidth * (leftOrTop ? part2 : part1) - 2 * this.padding;
           }
@@ -212,8 +212,8 @@ export default {
                 ctx.drawImage(image, imageX, imageY, drawImageWidth, drawImageHeight);
                 
                 ctx.font = `${fontSize}px zaoZiGongFang`;
-                ctx.textBaseline = "top";
-                // ctx.textAlign = 'center';
+                ctx.textBaseline = "hanging";
+                ctx.textAlign = 'center';
                 ctx.fillStyle = "#212121";
                 ctx.fillText(settingObj.title1, textX, textY, textMaxWidth);
                 ctx.fillText(settingObj.title2, textX, textY + fontSize + this.padding, textMaxWidth);
@@ -332,9 +332,5 @@ h2 {
 @font-face {
     font-family: 'zaoZiGongFang';
     src: url("./assets/zaozigongfangmodeng.ttf") format('truetype');
-}
-
-a {
-    font-family: 'zaoZiGongFang';
 }
 </style>
