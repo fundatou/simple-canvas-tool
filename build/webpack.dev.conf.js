@@ -9,6 +9,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -63,8 +64,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
-      }
-    ])
+      },
+      {
+        from: path.join(path.dirname(__dirname), 'src', 'lib', 'cv.js'),
+        to: config.dev.assetsSubDirectory
+      },
+    ]),
+    // new HtmlWebpackIncludeAssetsPlugin({
+    //     assets: ['cv.js'],
+    //     append: false,
+    // }),
   ]
 })
 

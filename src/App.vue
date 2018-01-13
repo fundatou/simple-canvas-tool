@@ -204,6 +204,11 @@ export default {
             canvas.height= canvasHeight;
             ctx = canvas.getContext('2d');
 
+            // ctx.imageSmoothingEnabled = false;
+            // ctx.mozImageSmoothingEnabled = false;
+            // ctx.webkitImageSmoothingEnabled = false;
+            // ctx.msImageSmoothingEnabled = false;
+
             ctx.fillStyle = this.settingObj.color;
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -221,7 +226,7 @@ export default {
             }
           });
         }
-    }
+    },
 }
 </script>
 
@@ -284,9 +289,9 @@ h2 {
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      width: 100px;
-      height: 100px;
-      line-height: 100px;
+      width: 200px;
+      height: 200px;
+      line-height: 200px;
       text-align: center;
 }
 .avatar-uploader:hover {
@@ -301,8 +306,8 @@ h2 {
     text-align: center;
 }
 .avatar {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     display: block;
 }
 
