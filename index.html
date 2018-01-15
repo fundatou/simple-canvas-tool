@@ -4,9 +4,168 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>cpc</title>
+    <style>
+      #app {
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: #2c3e50;
+        margin-left: 30px;
+      }
+    
+      h2 {
+        border-bottom: 1px solid #212121;
+      }
+    
+      .setting-row {
+        margin: 10px 0;
+      }
+    
+      .label {
+        display: inline-block;
+        font-size: 14px;
+        width: 100px;
+        text-align: right;
+        vertical-align: top;
+      }
+    
+      .content {
+        display: inline-block;
+        margin-left: 20px;
+      }
+    
+      .layout {
+        width: 120px;
+        height: 70px;
+        display: inline-block;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    
+      .color {
+        width: 40px;
+        height: 40px;
+        display: inline-block;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+    
+      .picture-delete {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 2;
+      }
+    
+      .avatar-uploader {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            width: 200px;
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+      }
+      .avatar-uploader:hover {
+          border-color: #409EFF;
+      }
+      .avatar-uploader-icon {
+          font-size: 28px;
+          color: #8c939d;
+          width: 40px;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+      }
+      .avatar {
+          width: 200px;
+          height: 200px;
+          display: block;
+      }
+    
+      .attention {
+        font-size: 10px;
+      }
+    
+      .radio {
+        margin-right: 10px;
+      }
+    
+      .button {
+        margin-top: 20px;
+        margin-left: 120px;
+        cursor: pointer;
+      }
+    
+      .active {
+        border: 2px solid #03a9f4;
+      }
+    
+      .canvas {
+        margin-left: 120px;
+        margin-top: 20px;
+      }
+    
+      @font-face {
+          font-family: 'zaoZiGongFang';
+          src: url("./assets/zaozigongfangmodeng.ttf") format('truetype');
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
+    <div id="app">
+      <h2>CPC生成工具</h2>
+      <div class="setting-row">
+          <label class="label">标题第一行</label>
+          <div class="content">
+              <input type="text" maxlength="6" v-model="settingObj.title1"/>
+              <span class="attention">六个字以内</span>
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">标题第二行</label>
+          <div class="content">
+              <input type="text" maxlength="6" v-model="settingObj.title2"/>
+              <span class="attention">六个字以内</span>
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">素材图</label>
+          <div class="avatar-uploader content" @click="showImgBox">
+              <img v-if="settingObj.imgSource" :src="settingObj.imgSource" class="avatar">
+              <span v-else class="avatar-uploader-icon">+</span>
+              <input style="visibility: hidden" type="file" accept=".jpg, .jpeg, .png" ref="img" @change="uploadImg" />
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">布局</label>
+          <div class="content">
+              <div class="layout" :class="{active: index === layoutActiveIndex}" v-for="(layout, index) in layoutList" :key="index" :style="layoutStyleObj(index)" @click="check(layout, 'layout', index)"></div>
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">背景色</label>
+          <div class="content">
+              <div class="color" :class="{active: index === colorActiveIndex}" v-for="(color, index) in colorList" :key="color" :style="colorStyleObj(color)" @click="check(color, 'color', index)"></div>
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">生成尺寸</label>
+          <div class="content">
+            <label class="radio" v-for="(size, index) in sizeList" :key="index"><input name="size" type="radio" @click="check(size, 'size', index)" />{{size.width}}px*{{size.height}}px</label> 
+          </div>
+      </div>
+      <button class="button" type="button" @click="create">生成</button>
+      <div class="canvas" v-if="showCanvas">
+          <canvas ref="canvas"></canvas>
+          <a id="download" :href="src" download="shopQrcode.jpg">下载图片</a>
+      </div>
+    </div>
+    <script src="./src/vue.js"></script>
+    <script src="./main.js"></script>
+    <script src="./src/cv.js"></script>
   </body>
 </html>
+
