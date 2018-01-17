@@ -109,8 +109,8 @@
       }
     
       @font-face {
-          font-family: 'zaoZiGongFang';
-          src: url("./assets/zaozigongfangmodeng.ttf") format('truetype');
+          font-family: 'font';
+          src: url("./assets/font.ttf") format('truetype');
       }
     </style>
   </head>
@@ -146,6 +146,12 @@
           </div>
       </div>
       <div class="setting-row">
+          <label class="label">素材图缩放比例</label>
+          <div class="content">
+              <input type="range" v-model="scale" min="0" max="2" step="0.01">
+          </div>
+      </div>
+      <div class="setting-row">
           <label class="label">背景色</label>
           <div class="content">
               <div class="color" :class="{active: index === colorActiveIndex}" v-for="(color, index) in colorList" :key="color" :style="colorStyleObj(color)" @click="check(color, 'color', index)"></div>
@@ -162,10 +168,40 @@
           <canvas ref="canvas"></canvas>
           <a id="download" :href="src" download="shopQrcode.jpg">下载图片</a>
       </div>
+      <canvas id="canvasInput" style="display: none" ref="canvasInput"></canvas>
+      <canvas id="canvasOutput" style="display: none" ref="canvasOutput"></canvas>
     </div>
+    <script>
+      var Module = {
+        setStatus: function (text) {
+          if (!Module.setStatus.last) Module.setStatus.last = {
+            time: Date.now(),
+            text: ''
+          };
+          if (text === Module.setStatus.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+          if (m) {
+            text = m[1];
+
+          }
+          if (text === '') {
+            isOpenCVReady = true;
+            console.log('OpenCV is ready');
+          }
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function (left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+    </script>
     <script src="./src/vue.js"></script>
     <script src="./main.js"></script>
-    <script src="./src/cv.js"></script>
+    <script src="./src/opencv.js"></script>
   </body>
 </html>
 
