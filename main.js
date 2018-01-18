@@ -233,7 +233,7 @@ new Vue({
           // 有时候清除不彻底会有一条白边 
           this.ctx.clearRect(this.imageX, this.imageY, this.sWidth2, this.sHeight2);
           this.ctx.fillStyle = this.settingObj.color;
-          this.ctx.fillRect(this.imageX, this.imageY, this.sWidth2 + 1, this.sHeight2 + 1);
+          this.ctx.fillRect(this.imageX > 0 ? this.imageX - 1 : this.imageX, this.imageY > 0 ? this.imageY - 1 : this.imageY, this.sWidth2 + 1, this.sHeight2 + 1);
 
           this.ctx.drawImage(canvasOutput, sx, sy, sWidth, sHeight, imageX, imageY, sWidth, sHeight);
           this.ctx.fillStyle = "#fff";
