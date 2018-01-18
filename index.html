@@ -146,12 +146,6 @@
           </div>
       </div>
       <div class="setting-row">
-          <label class="label">素材图缩放比例</label>
-          <div class="content">
-              <input type="range" v-model="scale" min="0" max="2" step="0.01">
-          </div>
-      </div>
-      <div class="setting-row">
           <label class="label">背景色</label>
           <div class="content">
               <div class="color" :class="{active: index === colorActiveIndex}" v-for="(color, index) in colorList" :key="color" :style="colorStyleObj(color)" @click="check(color, 'color', index)"></div>
@@ -164,8 +158,14 @@
           </div>
       </div>
       <button class="button" type="button" @click="create">生成</button>
+      <div class="setting-row" v-show="showScaleBtn">
+          <label class="label">素材图放大比例</label>
+          <div class="content">
+              <input type="range" v-model="scale" min="1" max="3" @change="drawImage" step="0.01">
+          </div>
+      </div>
       <div class="canvas" v-if="showCanvas">
-          <canvas ref="canvas"></canvas>
+          <canvas ref="canvas" @mousedown="dragStart" @mousemove="draging" @mouseup="dragEnd"></canvas>
           <a id="download" :href="src" download="shopQrcode.jpg">下载图片</a>
       </div>
       <canvas id="canvasInput" style="display: none" ref="canvasInput"></canvas>
