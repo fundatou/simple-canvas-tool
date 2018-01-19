@@ -134,6 +134,12 @@ new Vue({
         let imageWidth = this.imageWidth;  
         let imageHeight = this.imageHeight;
         let settingObj = this.settingObj;
+        if (!settingObj.size) {
+          settingObj.size = {
+            width: 360,
+            height: 180
+          };
+        }
         let canvasWidth = settingObj.size.width;  // 画布大小
         let canvasHeight = settingObj.size.height;
         let part1 = settingObj.layout.part1;
