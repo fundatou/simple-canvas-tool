@@ -53,7 +53,8 @@ new Vue({
           title1: '',
           title2: '',
           imgSource: '',
-          strokeColor: ''
+          strokeColor: '',
+          imgName: ''
         },
         layoutImageList: ['73', '46', '55', '64', '371'],
         layoutActiveIndex: -1,
@@ -81,6 +82,10 @@ new Vue({
         isDragging: false,
         sWidth2: 0,
         sHeight2: 0,
+        dragStartX: 0,
+        dragStartY: 0,
+        mask: null,
+        showMask: false,
       }
   },
   methods: {
@@ -136,12 +141,20 @@ new Vue({
         let type = settingObj.layout.type;
         let leftOrTop = part1 < part2;
         let fontSize = settingObj.fontSize;
+        let imgBoxWidth = 0;
+        let imgBoxHeight = 0;
         if (type) {
-          this.drawImageHeight = canvasHeight * (leftOrTop ? part1 : part2) - this.padding;
+          imgBoxHeight = canvasHeight * (leftOrTop ? part1 : part2) - this.padding;
+          imgBoxWidth = canvasWidth;
+          if (imageWidth / imageHeight > imgBoxWidth / imgBoxHeight) {
+            this.drawImageWidth = imgBoxWidth;
+            this.drawImageHeight = this.drawImageWidth * imageHeight / imageWidth;
+          } else {
+            this.drawImageHeight = imgBoxHeight;
+            this.drawImageWidth = this.drawImageHeight * imageWidth / imageHeight;
+          }
           this.imageY = leftOrTop ? this.padding : canvasHeight * part1;
           this.imageCenterY = this.imageY + this.drawImageHeight / 2;
-          // 图片等比缩放 
-          this.drawImageWidth = this.drawImageHeight * imageWidth / imageHeight; 
           this.imageX = (canvasWidth - this.drawImageWidth) / 2;
           this.imageCenterX = canvasWidth / 2;
 
@@ -149,10 +162,17 @@ new Vue({
           this.textX = canvasWidth / 2;
           this.textMaxWidth = canvasWidth - 2 * this.padding;
         } else {
-          this.drawImageWidth = canvasWidth * (leftOrTop ? part1 : part2) - this.padding;
+          imgBoxWidth = canvasWidth * (leftOrTop ? part1 : part2) - this.padding;
+          imgBoxHeight = canvasHeight;
+          if (imageWidth / imageHeight > imgBoxWidth / imgBoxHeight) {
+            this.drawImageWidth = imgBoxWidth;
+            this.drawImageHeight = this.drawImageWidth * imageHeight / imageWidth;
+          } else {
+            this.drawImageHeight = imgBoxHeight;
+            this.drawImageWidth = this.drawImageHeight * imageWidth / imageHeight;
+          }
           this.imageX = leftOrTop ? this.padding : canvasWidth * part1;
           this.imageCenterX = this.imageX + this.drawImageWidth / 2;
-          this.drawImageHeight = this.drawImageWidth * imageHeight / imageWidth; 
           this.imageY = (canvasHeight - this.drawImageHeight) / 2;
           this.imageCenterY = canvasHeight / 2;
 
@@ -211,13 +231,12 @@ new Vue({
         let fontSize = this.settingObj.fontSize;
         image.src = this.settingObj.imgSource;
         image.onload = () => {
-          if (!this.canvasInput) {
-            this.canvasInput = this.$refs.canvasInput;
-            this.canvasInput.width = this.imageWidth;
-            this.canvasInput.height = this.imageHeight;
-            inputCtx = canvasInput.getContext('2d');
-            inputCtx.drawImage(image, 0, 0, this.imageWidth, this.imageHeight);
-          }
+          this.canvasInput = this.$refs.canvasInput;
+          // 给canvas设置width和height时会清空画布，不用再手动清空画布 
+          this.canvasInput.width = this.imageWidth;
+          this.canvasInput.height = this.imageHeight;
+          inputCtx = canvasInput.getContext('2d');
+          inputCtx.drawImage(image, 0, 0, this.imageWidth, this.imageHeight);
 
           canvasOutput = this.$refs.canvasOutput;
           canvasOutput.getContext('2d').clearRect(0, 0, this.drawImageWidth * this.scale2, this.drawImageHeight * this.scale2);
@@ -233,7 +252,7 @@ new Vue({
           // 有时候清除不彻底会有一条白边 
           this.ctx.clearRect(this.imageX, this.imageY, this.sWidth2, this.sHeight2);
           this.ctx.fillStyle = this.settingObj.color;
-          this.ctx.fillRect(this.imageX > 0 ? this.imageX - 1 : this.imageX, this.imageY > 0 ? this.imageY - 1 : this.imageY, this.sWidth2 + 1, this.sHeight2 + 1);
+          this.ctx.fillRect(this.imageX > 0 ? this.imageX - 1 : this.imageX, this.imageY > 0 ? this.imageY - 1 : this.imageY, this.sWidth2 + 2, this.sHeight2 + 2);
 
           this.ctx.drawImage(canvasOutput, sx, sy, sWidth, sHeight, imageX, imageY, sWidth, sHeight);
           this.ctx.fillStyle = "#fff";
@@ -250,18 +269,33 @@ new Vue({
         }
       },
       dragStart(e) {
-        this.isDragging = true;
-        console.log(e);
+        //  鼠标点击区域在图片范围内
+        if (!this.isDragging && e.offsetX < (this.imageX + this.sWidth2) && e.offsetX > this.imageX && e.offsetY < (this.imageY + this.sHeight2) && e.offsetY > this.imageY) {
+          this.mask = this.$refs.mask;
+          this.isDragging = true;
+          this.mask.style.width = this.sWidth2 + 'px';
+          this.mask.style.height = this.sHeight2 + 'px';
+          this.mask.style.left = this.imageX + 'px';
+          this.mask.style.top = this.imageY + 'px';
+          this.dragStartX = e.clientX;
+          this.dragStartY = e.clientY;
+          this.showMask = true;
+        }
       },
       draging(e) {
         if (this.isDragging) {
-          console.log(e);
+          // 移动图片蒙层 
+          this.mask.style.left = e.clientX - this.dragStartX + this.imageX + 'px';
+          this.mask.style.top = e.clientY - this.dragStartY + this.imageY + 'px';
         }
       },
       dragEnd(e) {
         if (this.isDragging) {
-          console.log(e);
+          this.imageCenterX += e.clientX - this.dragStartX;
+          this.imageCenterY += e.clientY - this.dragStartY;
+          this.drawImage();
           this.isDragging = false;
+          this.showMask = false;
         }
       },
   },

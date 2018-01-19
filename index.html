@@ -106,11 +106,18 @@
       .canvas {
         margin-left: 120px;
         margin-top: 20px;
+        position: relative;
       }
     
       @font-face {
           font-family: 'font';
           src: url("./assets/font.ttf") format('truetype');
+      }
+
+      .mask {
+        background: rgba(255, 255, 255, 0.5);
+        position: absolute;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -129,6 +136,12 @@
           <div class="content">
               <input type="text" maxlength="6" v-model="settingObj.title2"/>
               <span class="attention">六个字以内</span>
+          </div>
+      </div>
+      <div class="setting-row">
+          <label class="label">图片下载名称</label>
+          <div class="content">
+              <input type="text" v-model="settingObj.imgName"/>
           </div>
       </div>
       <div class="setting-row">
@@ -165,9 +178,10 @@
           </div>
       </div>
       <div class="canvas" v-if="showCanvas">
-          <canvas ref="canvas" @mousedown="dragStart" @mousemove="draging" @mouseup="dragEnd"></canvas>
-          <a id="download" :href="src" download="shopQrcode.jpg">下载图片</a>
-      </div>
+          <canvas ref="canvas" @mousedown="dragStart"></canvas>
+          <a id="download" :href="src" :download="settingObj.imgName" style="font-family: font">下载图片</a>
+          <div v-show="showMask" class="mask"ref="mask" @mousemove="draging" @mouseup="dragEnd"></div>
+        </div>
       <canvas id="canvasInput" style="display: none" ref="canvasInput"></canvas>
       <canvas id="canvasOutput" style="display: none" ref="canvasOutput"></canvas>
     </div>
