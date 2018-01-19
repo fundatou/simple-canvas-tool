@@ -146,6 +146,7 @@ new Vue({
         if (type) {
           imgBoxHeight = canvasHeight * (leftOrTop ? part1 : part2) - this.padding;
           imgBoxWidth = canvasWidth;
+          // 根据图片长宽比和图片容器长宽比判断图片尺寸计算标准 
           if (imageWidth / imageHeight > imgBoxWidth / imgBoxHeight) {
             this.drawImageWidth = imgBoxWidth;
             this.drawImageHeight = this.drawImageWidth * imageHeight / imageWidth;
@@ -154,7 +155,7 @@ new Vue({
             this.drawImageWidth = this.drawImageHeight * imageWidth / imageHeight;
           }
           this.imageY = leftOrTop ? this.padding : canvasHeight * part1;
-          this.imageCenterY = this.imageY + this.drawImageHeight / 2;
+          this.imageCenterY = this.imageY + this.drawImageHeight / 2; // 图片中心坐标
           this.imageX = (canvasWidth - this.drawImageWidth) / 2;
           this.imageCenterX = canvasWidth / 2;
 
@@ -215,11 +216,11 @@ new Vue({
         let drawImageHeight = this.drawImageHeight * this.scale;
         let imageX = this.imageCenterX - drawImageWidth / 2;// 图片的起始坐标
         let imageY = this.imageCenterY - drawImageHeight / 2;
-        let sx = imageX > 0 ? 0 : -imageX;
+        let sx = imageX > 0 ? 0 : -imageX; // 计算出来的图片的起始坐标为负时，需要将图片切割
         let sy = imageY > 0 ? 0 : -imageY;
-        let sWidth = (drawImageWidth - sx) > this.settingObj.size.width ? this.settingObj.size.width : drawImageWidth - sx;
+        let sWidth = (drawImageWidth - sx) > this.settingObj.size.width ? this.settingObj.size.width : drawImageWidth - sx; // 切割之后图片的原始尺寸
         let sHeight = (drawImageHeight - sy) > this.settingObj.size.height ? this.settingObj.size.height : drawImageHeight - sy;
-        imageX = imageX > 0 ? imageX : 0;
+        imageX = imageX > 0 ? imageX : 0; // 图片的启示坐标小于零0，置为0
         imageY = imageY > 0 ? imageY : 0;
         let textX = this.textX;
         let textY = this.textY;
