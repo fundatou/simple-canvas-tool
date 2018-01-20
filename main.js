@@ -300,6 +300,7 @@ new Vue({
         if (this.isDragging) {
           this.imageCenterX += e.clientX - this.dragStartX;
           this.imageCenterY += e.clientY - this.dragStartY;
+          // 得到最终移动距离，重绘图片和文字
           this.drawImage();
           this.isDragging = false;
           this.showMask = false;
