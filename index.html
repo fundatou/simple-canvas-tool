@@ -1,63 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>cpc</title>
     <style>
-      #app {
-        font-family: 'Avenir', Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        color: #2c3e50;
-        margin-left: 30px;
-      }
-    
-      h2 {
-        border-bottom: 1px solid #212121;
-      }
-    
-      .setting-row {
-        margin: 10px 0;
-      }
-    
-      .label {
-        display: inline-block;
-        font-size: 14px;
-        width: 100px;
-        text-align: right;
-        vertical-align: top;
-      }
-    
-      .content {
-        display: inline-block;
-        margin-left: 20px;
-      }
-    
-      .layout {
-        width: 120px;
-        height: 70px;
-        display: inline-block;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-    
-      .color {
-        width: 40px;
-        height: 40px;
-        display: inline-block;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-    
-      .picture-delete {
-          position: absolute;
-          top: 0;
-          right: 0;
-          z-index: 2;
-      }
-    
-      .avatar-uploader {
+        #app {
+            font-family: 'Avenir', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #2c3e50;
+            margin-left: 30px;
+        }
+
+        h2 {
+            border-bottom: 1px solid #212121;
+        }
+
+        .setting-row {
+            margin: 10px 0;
+        }
+
+        .label {
+            display: inline-block;
+            font-size: 14px;
+            width: 100px;
+            text-align: right;
+            vertical-align: top;
+        }
+
+        .content {
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .layout {
+            width: 120px;
+            height: 70px;
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .color {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .picture-delete {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+        }
+
+        .avatar-uploader {
             border: 1px dashed #d9d9d9;
             border-radius: 6px;
             cursor: pointer;
@@ -67,155 +67,160 @@
             height: 200px;
             line-height: 200px;
             text-align: center;
-      }
-      .avatar-uploader:hover {
-          border-color: #409EFF;
-      }
-      .avatar-uploader-icon {
-          font-size: 28px;
-          color: #8c939d;
-          width: 40px;
-          height: 40px;
-          line-height: 40px;
-          text-align: center;
-      }
-      .avatar {
-          width: 200px;
-          height: 200px;
-          display: block;
-      }
-    
-      .attention {
-        font-size: 10px;
-      }
-    
-      .radio {
-        margin-right: 10px;
-      }
-    
-      .button {
-        margin-top: 20px;
-        margin-left: 120px;
-        cursor: pointer;
-      }
-    
-      .active {
-        border: 2px solid #03a9f4;
-      }
-    
-      .canvas {
-        margin-left: 120px;
-        margin-top: 20px;
-        position: relative;
-      }
-    
-      @font-face {
-          font-family: 'font';
-          src: url("./assets/font.ttf") format('truetype');
-      }
+        }
 
-      .mask {
-        background: rgba(255, 255, 255, 0.5);
-        position: absolute;
-        cursor: pointer;
-      }
+        .avatar-uploader:hover {
+            border-color: #409EFF;
+        }
+
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+
+        .attention {
+            font-size: 10px;
+        }
+
+        .radio {
+            margin-right: 10px;
+        }
+
+        .button {
+            margin-top: 20px;
+            margin-left: 120px;
+            cursor: pointer;
+        }
+
+        .active {
+            border: 2px solid #03a9f4;
+        }
+
+        .canvas {
+            margin-left: 120px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        @font-face {
+            font-family: 'font';
+            src: url("./assets/font.ttf") format('truetype');
+        }
+
+        .mask {
+            background: rgba(0, 255, 255, 0.5);
+            position: absolute;
+            cursor: pointer;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="app">
-      <h2>CPC生成工具</h2>
-      <div class="setting-row">
-          <label class="label">标题第一行</label>
-          <div class="content">
-              <input type="text" maxlength="6" v-model="settingObj.title1"/>
-              <span class="attention">六个字以内</span>
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">标题第二行</label>
-          <div class="content">
-              <input type="text" maxlength="6" v-model="settingObj.title2"/>
-              <span class="attention">六个字以内</span>
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">图片下载名称</label>
-          <div class="content">
-              <input type="text" v-model="settingObj.imgName"/>
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">素材图</label>
-          <div class="avatar-uploader content" @click="showImgBox">
-              <img v-if="settingObj.imgSource" :src="settingObj.imgSource" class="avatar">
-              <span v-else class="avatar-uploader-icon">+</span>
-              <input style="visibility: hidden" type="file" accept=".jpg, .jpeg, .png" ref="img" @change="uploadImg" />
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">布局</label>
-          <div class="content">
-              <div class="layout" :class="{active: index === layoutActiveIndex}" v-for="(layout, index) in layoutList" :key="index" :style="layoutStyleObj(index)" @click="check(layout, 'layout', index)"></div>
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">背景色</label>
-          <div class="content">
-              <div class="color" :class="{active: index === colorActiveIndex}" v-for="(color, index) in colorList" :key="color" :style="colorStyleObj(color)" @click="check(color, 'color', index)"></div>
-          </div>
-      </div>
-      <div class="setting-row">
-          <label class="label">生成尺寸</label>
-          <div class="content">
-            <label class="radio" v-for="(size, index) in sizeList" :key="index"><input name="size" type="radio" @click="check(size, 'size', index)" />{{size.width}}px*{{size.height}}px</label> 
-          </div>
-      </div>
-      <button class="button" type="button" @click="create">生成</button>
-      <div class="setting-row" v-show="showScaleBtn">
-          <label class="label">素材图放大比例</label>
-          <div class="content">
-              <input type="range" v-model="scale" min="1" max="3" @change="drawImage" step="0.01">
-          </div>
-      </div>
-      <div class="canvas" v-if="showCanvas">
-          <canvas ref="canvas" @mousedown="dragStart"></canvas>
-          <a id="download" :href="src" :download="settingObj.imgName" style="font-family: font">下载图片</a>
-          <div v-show="showMask" class="mask"ref="mask" @mousemove="draging" @mouseup="dragEnd"></div>
+        <h2>CPC生成工具</h2>
+        <div class="setting-row">
+            <label class="label">标题第一行</label>
+            <div class="content">
+                <input type="text" maxlength="6" v-model="settingObj.title1" />
+                <span class="attention">六个字以内</span>
+            </div>
         </div>
-      <canvas id="canvasInput" style="display: none" ref="canvasInput"></canvas>
-      <canvas id="canvasOutput" style="display: none" ref="canvasOutput"></canvas>
+        <div class="setting-row">
+            <label class="label">标题第二行</label>
+            <div class="content">
+                <input type="text" maxlength="6" v-model="settingObj.title2" />
+                <span class="attention">六个字以内</span>
+            </div>
+        </div>
+        <div class="setting-row">
+            <label class="label">图片下载名称</label>
+            <div class="content">
+                <input type="text" v-model="settingObj.imgName" />
+            </div>
+        </div>
+        <div class="setting-row">
+            <label class="label">素材图</label>
+            <div class="avatar-uploader content" @click="showImgBox">
+                <img v-if="settingObj.imgSource" :src="settingObj.imgSource" class="avatar">
+                <span v-else class="avatar-uploader-icon">+</span>
+                <input style="visibility: hidden" type="file" accept=".jpg, .jpeg, .png" ref="img" @change="uploadImg" />
+            </div>
+        </div>
+        <div class="setting-row">
+            <label class="label">布局</label>
+            <div class="content">
+                <div class="layout" :class="{active: index === layoutActiveIndex}" v-for="(layout, index) in layoutList" :key="index" :style="layoutStyleObj(index)"
+                    @click="check(layout, 'layout', index)"></div>
+            </div>
+        </div>
+        <div class="setting-row">
+            <label class="label">背景色</label>
+            <div class="content">
+                <div class="color" :class="{active: index === colorActiveIndex}" v-for="(color, index) in colorList" :key="color" :style="colorStyleObj(color)"
+                    @click="check(color, 'color', index)"></div>
+            </div>
+        </div>
+        <div class="setting-row">
+            <label class="label">生成尺寸</label>
+            <div class="content">
+                <label class="radio" v-for="(size, index) in sizeList" :key="index">
+                    <input name="size" type="radio" @click="check(size, 'size', index)" />{{size.width}}px*{{size.height}}px</label>
+            </div>
+        </div>
+        <button class="button" type="button" @click="create">生成</button>
+        <div class="setting-row" v-show="showScaleBtn">
+            <label class="label">素材图放大比例</label>
+            <div class="content">
+                <input type="range" v-model="scale" min="1" max="3" @change="drawImage" step="0.01">
+            </div>
+        </div>
+        <div class="canvas" v-if="showCanvas">
+            <canvas ref="canvas" @mousedown="dragStart"></canvas>
+            <a id="download" :href="src" :download="settingObj.imgName" style="font-family: font">下载图片</a>
+            <div v-show="showMask" class="mask" ref="mask" @mousemove="draging" @mouseup="dragEnd"></div>
+        </div>
+        <canvas id="canvasInput" style="display: none" ref="canvasInput"></canvas>
+        <canvas id="canvasOutput" style="display: none" ref="canvasOutput"></canvas>
     </div>
     <script>
-      var Module = {
-        setStatus: function (text) {
-          if (!Module.setStatus.last) Module.setStatus.last = {
-            time: Date.now(),
-            text: ''
-          };
-          if (text === Module.setStatus.text) return;
-          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-          var now = Date.now();
-          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
-          if (m) {
-            text = m[1];
-
-          }
-          if (text === '') {
-            isOpenCVReady = true;
-            console.log('OpenCV is ready');
-          }
-        },
-        totalDependencies: 0,
-        monitorRunDependencies: function (left) {
-          this.totalDependencies = Math.max(this.totalDependencies, left);
-          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-        }
-      };
-      Module.setStatus('Downloading...');
+        var Module = {
+            setStatus: function (text) {
+                if (!Module.setStatus.last) Module.setStatus.last = {
+                    time: Date.now(),
+                    text: ''
+                };
+                if (text === Module.setStatus.text) return;
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+                if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+                if (m) {
+                    text = m[1];
+                }
+                if (text === '') {
+                    isOpenCVReady = true;
+                    console.log('OpenCV is ready');
+                }
+            },
+            totalDependencies: 0,
+            monitorRunDependencies: function (left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+            }
+        };
+        Module.setStatus('Downloading...');
     </script>
     <script src="./src/vue.js"></script>
     <script src="./main.js"></script>
     <script src="./src/opencv.js"></script>
-  </body>
+</body>
 </html>
-
