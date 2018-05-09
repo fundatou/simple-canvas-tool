@@ -206,7 +206,8 @@ new Vue({
         draw () {
             let canvas;
             let ctx;
-            let canvasWidth = this.settingObj.size.width;  // 画布大小
+            // 画布大小
+            let canvasWidth = this.settingObj.size.width;  
             let canvasHeight = this.settingObj.size.height;
             let fontSize = this.settingObj.fontSize;
 
@@ -336,10 +337,17 @@ new Vue({
                 this.imageCenterY += e.clientY - this.dragStartY;
 
                 // 得到最终移动距离，重绘图片和文字
-                this.drawImage();
+                window.requestAnimationFrame(this.drawImage);
                 this.isDragging = false;
                 this.showMask = false;
             }
         },
     },
+    mounted() {
+        if (!window.requestAnimationFrame) {
+            window.requestAnimationFrame = (fn) => {
+                setTimeout(fn, 17);
+            }
+        }
+    }
 });
